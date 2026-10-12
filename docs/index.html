@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>WorkNotes 工作笔记</title>
+  <meta name="description" content="个人工作笔记知识库：机器视觉算法、上位机软件开发、项目总结">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- ===== 主题样式 =====
+       亮色基础主题 + 暗色主题（默认跟随系统 prefers-color-scheme）。
+       右上角悬浮按钮可手动在 自动/暗色/亮色 间切换，选择会记住在 localStorage。 -->
+  <link id="docsify-core" rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@5/dist/themes/core.min.css">
+  <link id="docsify-dark" rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@5/dist/themes/addons/core-dark.min.css" media="(prefers-color-scheme: dark)">
+
+  <style>
+    /* ---------- 自定义美化（轻量覆盖，不破坏 docsify 默认） ---------- */
+
+    /* 代码块圆角与滚动条 */
+    .markdown-section pre, .markdown-section code { border-radius: 6px; }
+    .markdown-section pre { padding: 16px; line-height: 1.55; }
+
+    /* 全局滚动条样式（WebKit / Chromium） */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: rgba(120, 130, 150, .45); border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    /* 表格与引用块观感 */
+    .markdown-section table { display: table; width: 100%; }
+    .markdown-section blockquote { color: var(--docsify-color-text-muted, #777); }
+
+    /* ---------- 侧边栏折叠：含子项的父节点显示箭头，子项默认收起 ---------- */
+    .sidebar-nav li.collapsible > a {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .sidebar-nav li.collapsible > a .collapse-indicator {
+      display: inline-block;
+      width: 14px;
+      margin-right: 2px;
+      font-size: 11px;
+      color: var(--docsify-color-text-muted, #999);
+      transition: transform .18s ease;
+      transform: rotate(90deg);
+      flex-shrink: 0;
+    }
+    .sidebar-nav li.collapsible.collapsed > a .collapse-indicator { transform: rotate(0deg); }
+    .sidebar-nav li.collapsible > ul { padding-left: 14px; }
+    .sidebar-nav li.collapsible.collapsed > ul { display: none; }
+
+    /* ---------- 主题切换悬浮按钮 ---------- */
+    #theme-toggle {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 999;
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 19px;
+      line-height: 1;
+      background: var(--docsify-color-brand, #2c3e50);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,.25);
+      transition: transform .15s ease;
+    }
+    #theme-toggle:hover { transform: scale(1.08); }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <button id="theme-toggle" type="button" title="切换主题：自动 / 暗色 / 亮色">🌓</button>
+
+  <script>
+    // ===== 主题切换逻辑：auto=跟随系统，dark=强制暗色，light=强制亮色 =====
+    (function () {
+      var darkLink = document.getElementById('docsify-dark');
+      var mode = localStorage.getItem('worknotes-theme') || 'auto';
+
+      function apply(m) {
+        if (m === 'dark')      darkLink.setAttribute('media', '');
+        else if (m === 'light') darkLink.setAttribute('media', 'none');
+        else                    darkLink.setAttribute('media', '(prefers-color-scheme: dark)');
+        localStorage.setItem('worknotes-theme', m);
+        btn.textContent = m === 'dark' ? '🌙' : (m === 'light' ? '☀️' : '🌓');
+        btn.title = '当前：' + (m === 'dark' ? '暗色' : m === 'light' ? '亮色' : '跟随系统') + '，点击切换';
+      }
+      var btn = document.getElementById('theme-toggle');
+      apply(mode);
+      btn.addEventListener('click', function () {
+        var next = mode === 'auto' ? 'dark' : (mode === 'dark' ? 'light' : 'auto');
+        mode = next; apply(next);
+      });
+    })();
+
+    // ===== 侧边栏折叠初始化：给包含子列表的父项加 class =====
+    function initSidebarCollapse() {
+      var nav = document.querySelector('.sidebar-nav');
+      if (!nav) return;
+      nav.querySelectorAll('li').forEach(function (li) {
+        var hasChild = li.querySelector(':scope > ul');
+        if (!hasChild) return;
+        if (!li.classList.contains('collapsible')) li.classList.add('collapsible', 'collapsed');
+        var a = li.querySelector(':scope > a, :scope > p');
+        if (a && !a.querySelector('.collapse-indicator')) {
+          var ind = document.createElement('span');
+          ind.className = 'collapse-indicator'; ind.textContent = '▸';
+          a.prepend(ind);
+        }
+      });
+    }
+    // 点击父级标题展开/收起（事件委托，安全，不破坏 docsify 重渲染）
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('.sidebar-nav li.collapsible > a');
+      if (a) a.parentElement.classList.toggle('collapsed');
+    });
+  </script>
+
+  <script>
+    window.$docsify = {
+      name: 'WorkNotes 工作笔记',
+      repo: '',                // GitHub 仓库地址（如 https://github.com/你的用户名/WorkNotes），发布后建议填上，用于页脚 "编辑" 链接
+
+      // ---- 侧边栏 / 导航 / 封面 ----
+      loadSidebar: true,       // 加载 _sidebar.md
+      loadNavbar: true,        // 加载 _navbar.md（顶部导航）
+      coverpage: true,         // 首页封面 _coverpage.md
+      maxLevel: 4,             // 正文目录层级（右上角大纲）上限
+      subMaxLevel: 2,          // 侧边栏自动补全的标题层级
+      alias: {                 // 让各级目录统一使用根目录的 _sidebar.md
+        '/.*/_sidebar.md': '/_sidebar.md',
+      },
+      mergeNavbar: true,       // 移动端导航合并到侧边栏
+
+      // ---- 内容搜索（需引入 search 插件） ----
+      search: {
+        placeholder: '搜索笔记...',
+        noData: '没有找到匹配文档',
+        depth: 3,
+        maxAge: 86400000,      // 索引缓存一天
+        paths: 'auto',         // 根据侧边栏自动发现可搜索文档
+        namespace: 'worknotes'
+      },
+
+      // ---- 其他 ----
+      externalLinkTarget: '_blank', // 站外链接新窗口打开
+    };
+  </script>
+
+  <!-- ===== Docsify 资源（v5） ===== -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@5"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@5/dist/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@5/dist/plugins/zoom-image.min.js"></script>
+
+  <!-- 渲染完成后重新挂载折叠样式（侧边栏切换页面时会重建） -->
+  <script>
+    (function () {
+      function reInit() {
+        setTimeout(initSidebarCollapse, 0);
+      }
+      var sidebar = document.querySelector('.sidebar');
+      if (sidebar) {
+        new MutationObserver(reInit).observe(sidebar, { childList: true, subtree: true });
+      }
+      window.addEventListener('load', reInit);
+    })();
+  </script>
+</body>
+</html>
