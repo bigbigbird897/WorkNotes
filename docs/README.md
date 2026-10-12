@@ -40,7 +40,7 @@ WorkNotes/
 │   │   ├── 工具Halcon.md / 工具OpenCV.md / 工具VisionPro.md
 │   │   └── assets/            # 图片资源
 │   ├── PCSoftwareDevelopment/ # 上位机软件开发
-│   │   ├── 编程语言C#.md / 编程语言C++.md / 编程语言Python.md
+│   │   ├── 编程语言CSharp.md / 编程语言C++.md / 编程语言Python.md
 │   │   ├── 组件Autofac.md / 组件Serilog.md / 组件Swagger.md
 │   │   ├── 工具DBeaver.md / 工具Linux与Windows.md / 工具Nginx.md
 │   │   ├── 工具Sqlsugar.md / 工具VS2026.md / 工具VSCode.md
@@ -51,7 +51,7 @@ WorkNotes/
 │       └── 济南-凯晨项目-病毒样本浓度测定与效价测定自动化设备.md
 ```
 
-> 命名说明：文件名中的 `#` 在 Markdown 链接里必须写成 `%23`（否则会被当作锚点），已在 `_sidebar.md` / `_navbar.md` 中处理。
+> 命名说明：URL 中的 `#` 会被当作锚点导致链接失效，因此 C# 笔记的文件名直接使用 `编程语言CSharp.md`（避开 `#`），链接无需编码。
 
 ---
 
@@ -114,7 +114,7 @@ WorkNotes/
 1. **新增笔记**：在对应分类目录下创建 `.md` 文件，并同步把链接加入 `_sidebar.md`（必要时补 `_navbar.md`）。
 2. **修改配置/结构后**：同步更新本 README（目录结构、功能说明、版本信息等）。
 3. **图片**：统一放在分类下的 `assets/` 目录，引用相对路径。
-4. **文件名**：避免空格与特殊字符；含 `#` 的文件名在链接中编码为 `%23`。
+4. **文件名**：避免空格与 URL 特殊字符（如 `#`、`&`、`?`）；C# 笔记统一命名为 `编程语言CSharp.md`。
 5. **提交**：每次变更后提交 git，并推送远端以更新 GitHub Pages。
 
 ---
