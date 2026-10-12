@@ -12,6 +12,9 @@
   <link id="docsify-core" rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@5/dist/themes/core.min.css">
   <link id="docsify-dark" rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@5/dist/themes/addons/core-dark.min.css" media="(prefers-color-scheme: dark)">
 
+  <!-- KaTeX 数学公式样式 -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
   <style>
     /* ---------- 自定义美化（轻量覆盖，不破坏 docsify 默认） ---------- */
 
@@ -147,7 +150,44 @@
 
       // ---- 其他 ----
       externalLinkTarget: '_blank', // 站外链接新窗口打开
+
+      // ---- 插件：数学公式（KaTeX） ----
+      plugins: [
+        function (hook) {
+          hook.beforeEach(function (content) {
+            return katexRenderMath(content);
+          });
+        }
+      ],
     };
+  </script>
+
+  <!-- ===== KaTeX 数学公式（需先于 docsify 加载，供渲染插件使用） ===== -->
+  <script src="//cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script>
+    // 把 markdown 中的行内 $...$ 与块级 $$...$$ 转成 KaTeX 渲染的 HTML。
+    // 代码块内容会被临时保护，避免其中的 $ 被误处理。
+    function katexRenderMath(content) {
+      if (typeof katex === 'undefined') return content;
+      var codes = [];
+      content = content.replace(/```[\s\S]*?```/g, function (m) {
+        codes.push(m);
+        return '\u0000CODE\u0000';
+      });
+      // 块级公式 $$...$$
+      content = content.replace(/\$\$([\s\S]+?)\$\$/g, function (_, tex) {
+        try { return katex.renderToString(tex.trim(), { throwOnError: false, displayMode: true }); }
+        catch (e) { return '$$' + tex + '$$'; }
+      });
+      // 行内公式 $...$
+      content = content.replace(/\$([^$\n]+?)\$/g, function (_, tex) {
+        try { return katex.renderToString(tex.trim(), { throwOnError: false, displayMode: false }); }
+        catch (e) { return '$' + tex + '$'; }
+      });
+      // 还原代码块
+      content = content.replace(/\u0000CODE\u0000/g, function () { return codes.shift(); });
+      return content;
+    }
   </script>
 
   <!-- ===== Docsify 资源（v5） ===== -->
