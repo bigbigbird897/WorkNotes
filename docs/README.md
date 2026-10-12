@@ -80,7 +80,7 @@ WorkNotes/
 
 ## 四、发布到 GitHub 与 GitHub Pages
 
-当前仓库已在本地初始化（`git init`），但**尚未配置远程仓库、也尚无提交**。首次发布步骤如下：
+本仓库已完成首次发布：`origin` 已指向 `git@github.com:bigbigbird897/WorkNotes.git`，`main` 分支已推送，GitHub Pages 源设为 `main` + `/docs`。若在**新环境 / 重置后**需要重新发布，按以下步骤：
 
 1. 在 GitHub 新建一个**空仓库**（例如 `WorkNotes`），**不要**勾选自动生成 README/.gitignore。
 
@@ -91,7 +91,7 @@ WorkNotes/
    git add .
    git commit -m "初始化 WorkNotes docsify 知识库"
    git branch -M main
-   git remote add origin https://github.com/<你的用户名>/WorkNotes.git
+   git remote add origin git@github.com:bigbigbird897/WorkNotes.git
    git push -u origin main
    ```
 
@@ -101,7 +101,7 @@ WorkNotes/
 
 4. 稍等片刻，站点即发布于：
 
-   `https://<你的用户名>.github.io/WorkNotes/`
+   `https://bigbigbird897.github.io/WorkNotes/`
 
 5. 发布后建议把 `index.html` 里的 `repo: ''` 填成仓库地址，侧边栏页脚会出现 GitHub 编辑链接。
 
@@ -119,7 +119,93 @@ WorkNotes/
 
 ---
 
-## 六、相关链接
+## 六、SOP —— 日常更新与同步（标准操作流程）
+
+> 适用：修改 / 新增笔记、调整目录结构、改动站点配置后，如何正确落地并同步到 GitHub Pages。
+> 核心原则：**凡改动结构、配置、新增目录/文件，必须同步更新本 README**；仅修改某篇笔记正文内容时，可选记录（见第七节更新记录）。
+
+### 0. 通用准备（所有 SOP 前置）
+
+| 项目 | 值 |
+| --- | --- |
+| 本地仓库 | `C:\Users\lwh\Documents\个人\WorkNotes` |
+| 站点目录 | `docs/` |
+| 远端 | `origin` = `git@github.com:bigbigbird897/WorkNotes.git` |
+| 分支 | `main`（GitHub Pages 源：`main` + `/docs`） |
+| 推送通道 | SSH **走 443**（`~/.ssh/config` 已配置 `Host github.com → HostName ssh.github.com, Port 443`），本地 22 端口不通也可推送 |
+| 线上地址 | `https://bigbigbird897.github.io/WorkNotes/` |
+
+### SOP-A 修改已有笔记内容
+
+1. 编辑目标 `.md`（docs 下任意层级），保存。
+2. 本地预览确认渲染正常（见 SOP-E）。
+3. 提交并推送（见 SOP-F）。
+
+### SOP-B 新增一篇笔记
+
+1. 在对应分类目录下新建 `.md`（如 `docs/PCSoftwareDevelopment/工具Xxx.md`）。
+2. **必须**把链接加入 `_sidebar.md`（在对应分组下，保持缩进层级）。
+3. 如需出现在顶部导航，同步加入 `_navbar.md`。
+4. 若该分类的文件清单有变化，更新 README「二、目录结构」。
+5. 本地预览 → 提交 → 推送。
+
+### SOP-C 新增一个分类目录
+
+1. 在 `docs/` 下新建目录，放入至少一个 `.md` 和 `assets/`（图片统一放这里）。
+2. 更新 `_sidebar.md`：新增顶层分组，把该目录下笔记列为子项。
+3. 更新 `_navbar.md`：如需要，增加入口。
+4. 更新 README「二、目录结构」。
+5. 本地预览 → 提交 → 推送。
+
+### SOP-D 修改站点配置（index.html / 主题 / 插件）
+
+1. 编辑 `index.html` 等配置文件。
+2. **必须**同步更新 README「一、站点功能说明」（含 CDN、版本等）。
+3. 本地预览，重点检查：页面加载、暗黑主题切换、搜索、侧边栏。
+4. 提交 → 推送。
+
+### SOP-E 本地预览验证
+
+```powershell
+cd "C:\Users\lwh\Documents\个人\WorkNotes\docs"
+docsify serve .
+```
+
+浏览器打开 `http://localhost:3000/`，检查：封面、侧边栏新增项、搜索命中、图片显示、主题切换。
+
+### SOP-F 提交并同步到远程（核心流程）
+
+```powershell
+cd "C:\Users\lwh\Documents\个人\WorkNotes"
+git add -A
+git status            # 确认变更符合预期，避免误提交
+git commit -m "本次变更说明"
+git push              # 走 SSH 443，无需额外参数
+```
+
+- 推送 `main` 后，GitHub Pages 约 1 分钟自动更新。
+- 验证线上：刷新 `https://bigbigbird897.github.io/WorkNotes/`。
+- 若 `git push` 报 SSH 连接失败：检查 `~/.ssh/config` 是否仍为 `HostName ssh.github.com` / `Port 443`。
+
+### 常见注意
+
+- 文件名避免空格与 URL 特殊字符（`#`、`&`、`?`）；C# 笔记统一命名 `编程语言CSharp.md`。
+- 图片统一放分类下 `assets/`，用相对路径引用。
+- 新增 / 移动文件后务必同步 `_sidebar.md`，否则站点侧边栏不会更新。
+
+---
+
+## 七、更新记录
+
+> 每次更新后，在这里追加一行，保持 README 与仓库实际状态同步。
+
+| 日期 | 变更 |
+| --- | --- |
+| 2026-10-12 | 初始化 docsify 知识库；配置暗黑主题 / 搜索 / 封面 / 侧边栏折叠；配置 SSH 走 443 并发布到 GitHub Pages；整理《数字图像处理基础》格式；新增本节 SOP 与更新记录 |
+
+---
+
+## 八、相关链接
 
 - Docsify 官方快速开始：<https://docsify.js.org/#/zh-cn/quickstart>
 - Docsify 配置项：<https://docsify.js.org/#/configuration>
