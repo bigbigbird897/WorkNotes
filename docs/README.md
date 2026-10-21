@@ -103,9 +103,19 @@ WorkNotes/
 
    `https://bigbigbird897.github.io/WorkNotes/`
 
-5. 发布后建议把 `index.html` 里的 `repo: ''` 填成仓库地址，侧边栏页脚会出现 GitHub 编辑链接。
+5. 发布后建议把 `index.html` 里的 `repo: ''` 填成仓库地址，侧边栏页脚会出现 GitHub 编辑链接。【已完成修改】
 
 > `.nojekyll` 文件已存在，GitHub Pages 会跳过 Jekyll 处理，确保 `_sidebar.md` 等以下划线开头的文件被正常当作资源提供。
+
+   6.CDN 缓存 & 浏览器缓存（已经部署成功，但你看到旧页面），GitHub Pages CDN 缓存很强，不是实时刷新：
+
+​	无痕 / 隐私窗口打开页面
+
+​	强制硬刷新：`Ctrl+Shift+R`（Windows） / `Cmd+Shift+R`（Mac）
+
+​	用 curl 绕过缓存测试：curl -H "Cache-Control: no-cache" https://xxx.github.io/
+
+> 官方说明：最长可能**最多等 10 分钟**CDN 才全部刷新GitHub Doc...
 
 ---
 
