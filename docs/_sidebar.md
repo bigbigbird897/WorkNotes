@@ -25,9 +25,12 @@
     - [SqlSugar](/PCSoftwareDevelopment/工具Sqlsugar.md)
     - [VS2026](/PCSoftwareDevelopment/工具VS2026.md)
     - [VSCode](/PCSoftwareDevelopment/工具VSCode.md)
-  - 其他
+  - 代码管理
+    - [Git&Github](PCSoftwareDevelopment/代码管理Git与Github.md)
+  - 前端
     - [VS-WPF 与 MVVM](/PCSoftwareDevelopment/VS-WPF与MVVM.md)
     - [前端知识](/PCSoftwareDevelopment/前端知识.md)
+  - 通讯
     - [常用通讯协议知识](/PCSoftwareDevelopment/常用通讯协议知识.md)
 
 - 项目总结
